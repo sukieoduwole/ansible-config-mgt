@@ -1,6 +1,6 @@
 ---
-- name: Update web, NFS, and DB servers
-  hosts: webservers, nfs, db
+- name: Update web
+  hosts: webservers
   become: yes
   tasks:
     - name: Ensure Wireshark is at the latest version
