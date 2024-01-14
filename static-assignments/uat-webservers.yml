@@ -1,35 +1,36 @@
 ---
-- name: install apache
+- name: Install Apache and Git, clone repository, and configure web server
+  hosts: uat-webservers
   become: true
-  ansible.builtin.yum:
-    name: "httpd"
-    state: present
+  tasks:
+    - name: Install Apache
+      ansible.builtin.yum:
+        name: "httpd"
+        state: present
 
-- name: install git
-  become: true
-  ansible.builtin.yum:
-    name: "git"
-    state: present
+    - name: Install Git
+      ansible.builtin.yum:
+        name: "git"
+        state: present
 
-- name: clone a repo
-  become: true
-  ansible.builtin.git:
-    repo: https://github.com/sukieoduwole/tooling.git
-    dest: /var/www/html
-    force: yes
+    - name: Clone a repo
+      ansible.builtin.git:
+        repo: https://github.com/sukieoduwole/tooling.git
+        dest: /var/www/html
+        force: yes
 
-- name: copy html content to one level up
-  become: true
-  command: cp -r /var/www/html/html/ /var/www/
+    - name: Copy HTML content to one level up
+      command: cp -r /var/www/html/html/ /var/www/
+      become: true
 
-- name: Start service httpd, if not started
-  become: true
-  ansible.builtin.service:
-    name: httpd
-    state: started
+    - name: Start Apache service if not started
+      ansible.builtin.service:
+        name: httpd
+        state: started
+      become: true
 
-- name: recursively remove /var/www/html/html/ directory
-  become: true
-  ansible.builtin.file:
-    path: /var/www/html/html
-    state: absent
+    - name: Recursively remove /var/www/html/html/ directory
+      ansible.builtin.file:
+        path: /var/www/html/html
+        state: absent
+      become: true
